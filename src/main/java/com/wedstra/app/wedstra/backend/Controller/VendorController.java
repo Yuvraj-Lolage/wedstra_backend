@@ -6,6 +6,7 @@ import com.wedstra.app.wedstra.backend.Services.VendorServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,13 @@ public class VendorController {
     @GetMapping("/getVendors")
     public ResponseEntity<List<Vendor>> handleGetAllVendors(){
         return new ResponseEntity<>(vendorServices.getAllVendors(), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/admin")
+    public ResponseEntity<String> handleAdminEndpoint(){
+        return new ResponseEntity<>("this is Admin endpoint", HttpStatus.OK);
     }
 
 
