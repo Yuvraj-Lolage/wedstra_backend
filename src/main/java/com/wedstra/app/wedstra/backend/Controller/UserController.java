@@ -2,17 +2,14 @@ package com.wedstra.app.wedstra.backend.Controller;
 
 import com.wedstra.app.wedstra.backend.Entity.LoginRequest;
 import com.wedstra.app.wedstra.backend.Entity.User;
-import com.wedstra.app.wedstra.backend.Repo.UserRepo;
 import com.wedstra.app.wedstra.backend.Services.UserServices;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Optionals;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -60,6 +57,11 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/get-user/{username}")
+    public ResponseEntity<User> hendleGetUserByUsername(@PathVariable String username){
+        return new ResponseEntity<>(userServices.getUserByUsername(username), HttpStatus.OK);
     }
 
 

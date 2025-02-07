@@ -59,4 +59,8 @@ public class UserServices {
     public User getUserById(String id) {
         return userRepo.findById(new ObjectId(id)).orElse(null);
     }
+
+    public User getUserByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
 }
