@@ -11,8 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Vendor {
+public class Vendor{
    private String id;
+   private String username;
+   private String password;
+   private String passwordHash;
    private String vendor_name;
    private String business_name;
    private String business_category;
@@ -20,14 +23,29 @@ public class Vendor {
    private String vendor_PAN;
    private String business_PAN;
    private String electricity_bill;
-   private List<String> business_photos;
    private String liscence;
+   private List<String> business_photos;
    private String gst_number;
    private String terms_and_conditions;
    private String email;
    private String phone_no;
-   private String password;
    private String city;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
     public String getBusiness_name() {
         return business_name;

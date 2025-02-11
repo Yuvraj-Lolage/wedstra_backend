@@ -2,14 +2,18 @@ package com.wedstra.app.wedstra.backend.Services;
 
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Repo.VendorRepository;
+import com.wedstra.app.wedstra.backend.config.AmazonS3Config.bucket.BucketName;
+import com.wedstra.app.wedstra.backend.config.AmazonS3Config.bucket.fileStore.FileStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class VendorServices {
@@ -19,6 +23,12 @@ public class VendorServices {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private JWTServices jwtServices;
+
+    @Autowired
+    private FileStore fileStore;
 
     public List<Vendor> getAllVendors(){
         return vendorRepository.findAll();
@@ -74,5 +84,46 @@ public class VendorServices {
             mongoTemplate.updateFirst(query, update, Vendor.class);
             return "vendor found.";
         }
+    }
+
+    public String authenticate(String username, String password) {
+        Vendor vendor = vendorRepository.findByUsername(username);
+        if(vendor != null){
+            if(vendor.getPassword().equals(password)){
+                return jwtServices.generateToken(username, vendor.getId());
+            }
+            else{
+                return "bad credentials";
+            }
+        }
+        else{
+            return "vendor not found";
+        }
+    }
+
+    public String uploadImage(MultipartFile file) {
+        // save file to s3
+        //1. check if the file is empty
+        if(file.isEmpty()){
+            return "file is empty";
+        }
+        //2. check if the file is an image
+        if(!Arrays.asList("image/jpeg", "image/png", "image/gif").contains(file.getContentType())){
+            return "file is not an image";
+        }
+        //3. Grab the file metadata
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
+        //4. Save the image to s3 and update the vendor image url
+
+        String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), file.getOriginalFilename());
+        String fileName =  String.format("%s/%s", file.getName(), file.getOriginalFilename());
+        try {
+            fileStore.save(path, fileName, Optional.of(metadata), file.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return "image uploaded";
     }
 }
