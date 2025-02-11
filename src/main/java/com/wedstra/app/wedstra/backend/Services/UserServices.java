@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,12 +48,15 @@ public class UserServices {
 
     public String authenticate(String username, String passwordHash){
         User user = userRepo.findByUsername(username);
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordHash));
-
-        if(authentication.isAuthenticated()){
-            return jwtServices.generateToken(username, user.getId());
+        if(user != null){
+            Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordHash));
+            if(authentication.isAuthenticated()){
+                return jwtServices.generateToken(username, user.getId());
+            }
         }
-
+        else{
+            return "Invalid username or password";
+        }
         return "fail";
     }
 

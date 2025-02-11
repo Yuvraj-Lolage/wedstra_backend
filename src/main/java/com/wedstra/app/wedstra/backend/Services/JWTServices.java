@@ -22,11 +22,12 @@ public class JWTServices {
 
     public JWTServices(){
         try {
-           KeyGenerator keyGen =  KeyGenerator.getInstance("HmacSHA256");
-           SecretKey sk = keyGen.generateKey();
-           secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+//           KeyGenerator keyGen =  KeyGenerator.getInstance("HmacSHA256");
+//           SecretKey sk = keyGen.generateKey();
+//           secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+            this.secretKey = "zNq2ZkFf4BvGn9lRMQ5tL7UdKj2lNnLqkZLk1K1wS7k=";
 
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -69,6 +70,9 @@ public class JWTServices {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
+        if(isTokenExpired(token)){
+            return false;
+        }
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 

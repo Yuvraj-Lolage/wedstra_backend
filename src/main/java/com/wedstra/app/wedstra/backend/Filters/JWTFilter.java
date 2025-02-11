@@ -44,6 +44,9 @@ public class JWTFilter extends OncePerRequestFilter {
                         .buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+            else{
+                response.sendError(403, "Invalid Token");
+            }
         }
 
         filterChain.doFilter(request, response);

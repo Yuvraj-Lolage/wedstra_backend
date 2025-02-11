@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (requests) -> (
                                 (AuthorizeHttpRequestsConfigurer.AuthorizedUrl)requests
-                                        .requestMatchers("/user/register", "/user/login").permitAll()
+                                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login").permitAll()
                                         .anyRequest()).authenticated())
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())

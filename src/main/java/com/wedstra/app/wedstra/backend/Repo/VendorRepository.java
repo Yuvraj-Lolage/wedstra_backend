@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VendorRepository extends MongoRepository<Vendor, ObjectId> {
     void deleteById(String id);
+
+    Vendor findByUsername(String username);
 }
