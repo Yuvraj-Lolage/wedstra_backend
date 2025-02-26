@@ -12,24 +12,42 @@ import java.util.List;
 @NoArgsConstructor
 
 public class Vendor{
-   private String id;
-   private String username;
-   private String password;
-   private String passwordHash;
-   private String vendor_name;
-   private String business_name;
-   private String business_category;
-   private String vendor_aadharCard;
-   private String vendor_PAN;
-   private String business_PAN;
-   private String electricity_bill;
-   private String liscence;
-   private List<String> business_photos;
-   private String gst_number;
-   private String terms_and_conditions;
-   private String email;
-   private String phone_no;
-   private String city;
+    private String id;
+    private String username;
+    private String password;
+    private String passwordHash;
+    private String vendor_name;
+    private String business_name;
+    private String business_category;
+    private String vendor_aadharCard;
+    private String vendor_PAN;
+    private String business_PAN;
+    private String electricity_bill;
+    private String liscence;
+    private List<String> business_photos;
+    private String gst_number;
+    private String terms_and_conditions;
+    private String email;
+    private String phone_no;
+    private String city;
+     
+//    public Vendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, String termsAndConditions) {
+//    }
+
+
+    public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String city, String gst_number, String terms_and_conditions ) {
+        this.username = username;
+        this.password = password;
+        this.vendor_name = vendor_name;
+        this.business_name = business_name;
+        this.business_category = business_category;
+        this.gst_number = gst_number;
+        this.terms_and_conditions = terms_and_conditions;
+        this.email = email;
+        this.phone_no = phone_no;
+        this.city = city;
+        this.liscence = liscence;
+    }
 
     public String getUsername() {
         return username;

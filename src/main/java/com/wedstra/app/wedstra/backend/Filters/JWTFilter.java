@@ -31,6 +31,14 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
+
+        // Allow public endpoints to pass without authentication
+        if (request.getRequestURI().equals("/user/register") || request.getRequestURI().equals("/user/login") ||
+                request.getRequestURI().equals("/vendor/register") || request.getRequestURI().equals("/vendor/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtServices.extractUserName(token);

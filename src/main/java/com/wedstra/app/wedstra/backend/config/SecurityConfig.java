@@ -32,7 +32,6 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -44,18 +43,19 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(
-                        (requests) -> (
-                                (AuthorizeHttpRequestsConfigurer.AuthorizedUrl)requests
-                                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login").permitAll()
-                                        .anyRequest()).authenticated())
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        return (SecurityFilterChain)http.build();
+
+        return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

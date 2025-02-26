@@ -22,12 +22,14 @@ public class FileStore {
         this.s3 = s3;
     }
 
-    public String save(String path, String fileName, Optional<Map<String, String>> optionalMetadata, InputStream inputStream) {
+    public String save(String fileName ,String fileType, String vendor_id ,Optional<Map<String, String>> optionalMetadata, InputStream inputStream) {
+        String key = vendor_id + "/documents/" + "/"+fileType+"_" + fileName;
         try {
             // Build the PutObjectRequest with metadata if provided
             PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
                     .bucket(BucketName.PROFILE_IMAGE.getBucketName())
-                    .key(path + "/" + fileName);
+                    .key(key);
+//                    .acl("public-read");
 
             // Add user metadata if present
             optionalMetadata.ifPresent(metadataMap -> putObjectRequestBuilder.metadata(metadataMap));
@@ -37,9 +39,7 @@ public class FileStore {
                     putObjectRequestBuilder.build(),
                     RequestBody.fromInputStream(inputStream, inputStream.available())
             );
-
-            // Return the ETag for confirmation
-            return "File uploaded successfully with ETag: " + response.eTag();
+            return "https://" + BucketName.PROFILE_IMAGE.getBucketName() + ".s3.eu-north-1.amazonaws.com/" + fileName;
 
         } catch (Exception e) {
             e.printStackTrace();

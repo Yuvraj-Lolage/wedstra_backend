@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 @RestController
 @RequestMapping("/vendor")
@@ -29,10 +30,35 @@ public class VendorController {
     }
 
 
-    @PostMapping("/register")
-    public ResponseEntity<String> handleCreateVendor(@RequestBody Vendor vendor){
-        return new ResponseEntity<String>(vendorServices.createVendor(vendor), HttpStatus.CREATED);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<String> handleCreateVendor(@RequestBody Vendor vendor){
+//        return new ResponseEntity<String>(vendorServices.createVendor(vendor), HttpStatus.CREATED);
+//    }
+@PostMapping(
+        path = "/register",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<?> registerVendor(
+        @RequestParam("username") String username,
+        @RequestParam("password") String password,
+        @RequestParam("vendor_name") String vendorName,
+        @RequestParam("business_name") String businessName,
+        @RequestParam("business_category") String businessCategory,
+        @RequestParam("email") String email,
+        @RequestParam("phone_no") String phoneNo,
+        @RequestParam("city") String city,
+        @RequestParam("gst_number") String gstNumber,
+        @RequestParam("liscence") MultipartFile license,
+        @RequestParam("terms_and_conditions") String termsAndConditions,
+        @RequestParam("vendor_aadharCard") MultipartFile vendorAadharCard,
+        @RequestParam("vendor_PAN") MultipartFile vendorPAN,
+        @RequestParam("business_PAN") MultipartFile businessPAN,
+        @RequestParam("electricity_bill") MultipartFile electricityBill,
+        @RequestParam("business_photos") List<MultipartFile> businessPhotos
+) throws IOException {
+
+    return vendorServices.registerVendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, license, termsAndConditions, vendorAadharCard, vendorPAN, businessPAN, electricityBill, businessPhotos);
+}
 
     @PostMapping("/login")
     public ResponseEntity<String> handleVendorLogin(@RequestBody LoginRequest loginRequest){
@@ -46,8 +72,6 @@ public class VendorController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/admin")
     public ResponseEntity<String> handleAdminEndpoint(){
         return new ResponseEntity<>("this is Admin endpoint", HttpStatus.OK);
@@ -84,13 +108,13 @@ public class VendorController {
     }
 
 
-    @PostMapping(
-            path = "/image/upload",
-            value = "/image/upload",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<String> handleUploadImage(@RequestBody MultipartFile multipartFile){
-        return new ResponseEntity<>(vendorServices.uploadImage(multipartFile), HttpStatus.OK);
-    }
+//    @PostMapping(
+//            path = "/image/upload",
+//            value = "/image/upload",
+//            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<String> handleUploadImage(@RequestBody MultipartFile multipartFile){
+//        return new ResponseEntity<>(vendorServices.uploadImage(multipartFile), HttpStatus.OK);
+//    }
 }
