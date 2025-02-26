@@ -34,7 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // Allow public endpoints to pass without authentication
         if (request.getRequestURI().equals("/user/register") || request.getRequestURI().equals("/user/login") ||
-                request.getRequestURI().equals("/vendor/register") || request.getRequestURI().equals("/vendor/login")) {
+                request.getRequestURI().equals("/vendor/register") || request.getRequestURI().equals("/vendor/login") || request.getRequestURI().equals("/vendor/test")) {
             filterChain.doFilter(request, response);
             return;
         }

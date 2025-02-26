@@ -34,10 +34,13 @@ public class VendorController {
 //    public ResponseEntity<String> handleCreateVendor(@RequestBody Vendor vendor){
 //        return new ResponseEntity<String>(vendorServices.createVendor(vendor), HttpStatus.CREATED);
 //    }
-@PostMapping(
-        path = "/register",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+
+@PostMapping("/test")
+public ResponseEntity<?> handleTestRoute(){
+        return new ResponseEntity<>("test API", HttpStatus.OK);
+}
+@PostMapping("/register"
+)
 public ResponseEntity<?> registerVendor(
         @RequestParam("username") String username,
         @RequestParam("password") String password,
@@ -58,7 +61,8 @@ public ResponseEntity<?> registerVendor(
 ) throws IOException {
 
     return vendorServices.registerVendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, license, termsAndConditions, vendorAadharCard, vendorPAN, businessPAN, electricityBill, businessPhotos);
-}
+    //return new ResponseEntity<>("working", HttpStatus.CREATED);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> handleVendorLogin(@RequestBody LoginRequest loginRequest){

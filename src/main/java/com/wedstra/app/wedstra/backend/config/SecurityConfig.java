@@ -44,7 +44,7 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login").permitAll()
+                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
