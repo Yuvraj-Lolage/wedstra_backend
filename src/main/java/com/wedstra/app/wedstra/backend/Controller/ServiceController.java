@@ -22,13 +22,27 @@ public class ServiceController {
         return new ResponseEntity<List<Service>>(serviceServices.getAllServices(), HttpStatus.OK);
     }
 
-    @GetMapping("/getByVendor/{vendor_id}")
+    @GetMapping("/{vendor_id}/all")
     public ResponseEntity<List<Service>> handleGetServicesByVendor(@PathVariable String vendor_id){
         return new ResponseEntity<>(serviceServices.getServicesByVendor(vendor_id), HttpStatus.OK);
     }
 
-    @PostMapping("/createService")
-    public ResponseEntity<Service> handleCreateService(@RequestBody Service service){
-        return new ResponseEntity<>(serviceServices.createService(service), HttpStatus.CREATED);
+    @GetMapping("/{category}")
+    public ResponseEntity<List<Service>> handleGetServicesByCategory(@PathVariable String category){
+        return new ResponseEntity<>(serviceServices.getServicesBycategory(category), HttpStatus.OK);
+    }
+
+    @PostMapping("/{vendor_id}/create-service")
+    public ResponseEntity<Service> handleCreateService(@RequestBody Service service, @PathVariable String vendor_id){
+        return new ResponseEntity<>(serviceServices.createService(service, vendor_id), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{service_id}/delete")
+    public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id){
+        if(serviceServices.deleteService(service_id)){
+            return new ResponseEntity<>("Service deleted", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("service not found", HttpStatus.NOT_FOUND);
+        }
     }
 }

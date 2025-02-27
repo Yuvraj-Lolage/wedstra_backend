@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends MongoRepository<Service, ObjectId>{
         List<Service> getServicesById(String vendor_id);
+
+    Service deleteById(String id);
 }
