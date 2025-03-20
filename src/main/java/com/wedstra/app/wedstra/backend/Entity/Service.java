@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "services")
@@ -29,8 +29,20 @@ public class Service {
     private double ratings;
     private List<String> reviews;
     private String location;
-    private Date created_at;
-    private Date updated_at;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+
+    public Service(String service_name, String description, String category, String min_price, String max_price, String vendor_id, String location, LocalDateTime created_at, LocalDateTime updated_at) {
+        this.service_name = service_name;
+        this.description = description;
+        this.category = category;
+        this.min_price = min_price;
+        this.max_price = max_price;
+        this.vendor_id = vendor_id;
+        this.location = location;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
 
 
     public String getService_name() {
@@ -121,19 +133,19 @@ public class Service {
         this.location = location;
     }
 
-    public Date getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 
-    public Date getUpdated_at() {
+    public LocalDateTime getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Date updated_at) {
+    public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
 }

@@ -87,6 +87,11 @@ public ResponseEntity<?> registerVendor(
         return new ResponseEntity<String>("Get Vendor by Id", HttpStatus.OK);
     }
 
+    @GetMapping("/getVendorByUsername/{username}")
+    public ResponseEntity<?> handleGetVendorByUsername(@PathVariable String username){
+        return new ResponseEntity<>(vendorServices.getVendorByUserName(username), HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/deleteVendor/{id}")
     public ResponseEntity<String> handleDeleteVendor(@PathVariable String id){

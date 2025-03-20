@@ -30,6 +30,7 @@ public class Vendor{
     private String email;
     private String phone_no;
     private String city;
+    private String role;
      
 //    public Vendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, String termsAndConditions) {
 //    }
@@ -47,6 +48,14 @@ public class Vendor{
         this.phone_no = phone_no;
         this.city = city;
         this.liscence = liscence;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUsername() {

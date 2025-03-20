@@ -22,8 +22,8 @@ public class FileStore {
         this.s3 = s3;
     }
 
-    public String save(String fileName ,String fileType, String vendor_id ,Optional<Map<String, String>> optionalMetadata, InputStream inputStream) {
-        String key = vendor_id + "/documents/" + "/"+fileType+"_" + fileName;
+    public String save(String fileName ,String fileType, String vendor_id ,Optional<Map<String, String>> optionalMetadata, InputStream inputStream, String key) {
+//        key = vendor_id + "/documents/" + "/"+fileType+"_" + fileName;
         try {
             // Build the PutObjectRequest with metadata if provided
             PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
@@ -39,7 +39,7 @@ public class FileStore {
                     putObjectRequestBuilder.build(),
                     RequestBody.fromInputStream(inputStream, inputStream.available())
             );
-            return "https://" + BucketName.PROFILE_IMAGE.getBucketName() + ".s3.eu-north-1.amazonaws.com/" + fileName;
+            return "https://" + BucketName.PROFILE_IMAGE.getBucketName() + ".s3.eu-north-1.amazonaws.com/" + key;
 
         } catch (Exception e) {
             e.printStackTrace();

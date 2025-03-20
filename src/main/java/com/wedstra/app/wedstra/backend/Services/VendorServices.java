@@ -63,6 +63,7 @@ public ResponseEntity<?> registerVendor(String username, String password, String
     }
     Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
     vendor.setPasswordHash(passwordEncoder.encode(password));
+    vendor.setRole("VENDOR");
     vendorRepository.save(vendor);
 
     //step 2 Save the images to the S3 bucket
@@ -73,16 +74,17 @@ public ResponseEntity<?> registerVendor(String username, String password, String
 //        metadata.put("Content-Type", vendorAadharCard.getContentType());
 //        metadata.put("Content-Length", String.valueOf(vendorAadharCard.getSize()));
 
-    fileUrls.put("vendor_aadharCard", fileStore.save(vendorAadharCard.getOriginalFilename(),"vendor_adhaarCard", vendorId ,Optional.of(metadata),vendorAadharCard.getInputStream()));
-    fileUrls.put("vendor_PAN", fileStore.save(vendorPAN.getOriginalFilename(),"vendor_PAN", vendorId ,Optional.of(metadata),vendorPAN.getInputStream()));
-    fileUrls.put("business_PAN", fileStore.save(businessPAN.getOriginalFilename(),"business_PAN", vendorId ,Optional.of(metadata),businessPAN.getInputStream()));
-    fileUrls.put("electricity_bill", fileStore.save(electricityBill.getOriginalFilename(),"electricity_bill", vendorId ,Optional.of(metadata),electricityBill.getInputStream()));
-    fileUrls.put("license", fileStore.save(license.getOriginalFilename(),"license", vendorId ,Optional.of(metadata),license.getInputStream()));
+//    String key = vendorId + "/documents/" + "/"+fileType+"_" + fileName;
+    fileUrls.put("vendor_aadharCard", fileStore.save(vendorAadharCard.getOriginalFilename(),"vendor_adhaarCard", vendorId ,Optional.of(metadata),vendorAadharCard.getInputStream(), generateKey(vendorAadharCard, vendorId, "adhaarCard")));
+    fileUrls.put("vendor_PAN", fileStore.save(vendorPAN.getOriginalFilename(),"vendor_PAN", vendorId ,Optional.of(metadata),vendorPAN.getInputStream(), generateKey(vendorAadharCard, vendorId, "PAN Card")));
+    fileUrls.put("business_PAN", fileStore.save(businessPAN.getOriginalFilename(),"business_PAN", vendorId ,Optional.of(metadata),businessPAN.getInputStream(),generateKey(vendorAadharCard, vendorId, "Business PAN")));
+    fileUrls.put("electricity_bill", fileStore.save(electricityBill.getOriginalFilename(),"electricity_bill", vendorId ,Optional.of(metadata),electricityBill.getInputStream(),generateKey(vendorAadharCard, vendorId, "Electricity Bill")));
+    fileUrls.put("license", fileStore.save(license.getOriginalFilename(),"license", vendorId ,Optional.of(metadata),license.getInputStream(),generateKey(vendorAadharCard, vendorId, "license")));
 
 
         List<String> photoUrls = new ArrayList<>();
         for(MultipartFile businessPhoto: businessPhotos){
-            String photoUrl = fileUrls.put("business_photos", fileStore.save(businessPhoto.getOriginalFilename(),"business_photos", vendorId ,Optional.of(metadata),businessPhoto.getInputStream()));
+            String photoUrl = fileUrls.put("business_photos", fileStore.save(businessPhoto.getOriginalFilename(),"business_photos", vendorId ,Optional.of(metadata),businessPhoto.getInputStream(), generateKey(businessPhoto, vendorId, "business_photos")));
             photoUrls.add(photoUrl);
         }
 
@@ -97,6 +99,11 @@ public ResponseEntity<?> registerVendor(String username, String password, String
 
     return ResponseEntity.ok(vendor);
 }
+
+    private String generateKey(MultipartFile vendorAadharCard, String vendorId, String adhaarCard) {
+        String key = vendorId + "/documents/" + "/"+adhaarCard+"_" + vendorAadharCard.getOriginalFilename();
+        return key;
+    }
 
 
     public String deleteVendor(String id) {
@@ -157,6 +164,10 @@ public ResponseEntity<?> registerVendor(String username, String password, String
         else{
             return "vendor not found";
         }
+    }
+
+    public Vendor getVendorByUserName(String username) {
+        return vendorRepository.findByUsername(username);
     }
 
 //    public String uploadImage(MultipartFile file) {
