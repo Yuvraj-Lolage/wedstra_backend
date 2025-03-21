@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AmazonConfig {
-    Dotenv dotenv = Dotenv.load();
+    Dotenv dotenv = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
     @Bean
     public S3Client s3Client() {
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(dotenv.get("AWS_ACCESS_KEY_ID"), dotenv.get("AWS_SECRET_ACCESS_KEY"));
