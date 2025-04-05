@@ -40,6 +40,8 @@ public class VendorController {
 public ResponseEntity<?> handleTestRoute(){
         return new ResponseEntity<>("test API", HttpStatus.OK);
 }
+
+
 @PostMapping("/register"
 )
 public ResponseEntity<?> registerVendor(
@@ -84,8 +86,8 @@ public ResponseEntity<?> registerVendor(
 
 
     @GetMapping("/getVendorById/{id}")
-    public ResponseEntity<String> handleGetVendorById(@PathVariable String id){
-        return new ResponseEntity<String>("Get Vendor by Id", HttpStatus.OK);
+    public ResponseEntity<Vendor> handleGetVendorById(@PathVariable String id){
+        return new ResponseEntity<>(vendorServices.getVendorById(id), HttpStatus.OK);
     }
 
     @GetMapping("/getVendorByUsername/{username}")

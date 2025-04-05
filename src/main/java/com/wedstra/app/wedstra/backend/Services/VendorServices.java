@@ -3,6 +3,7 @@ package com.wedstra.app.wedstra.backend.Services;
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Repo.VendorRepository;
 import com.wedstra.app.wedstra.backend.config.AmazonS3Config.bucket.fileStore.FileStore;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -44,26 +45,11 @@ public class VendorServices {
 //        return "vendor created in services class";
 //    }
 public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException {
-    //step 1 Save vendor details to the MongoDB
-    System.out.println("Vendor Name: "+vendorName);
-    System.out.println("Business Name: "+businessName);
-    System.out.println("Business Category: "+businessCategory);
-    System.out.println("Email: "+email);
-    System.out.println("Phone No: "+phoneNo);
-    System.out.println("City: "+city);
-    System.out.println("GST Number: "+gstNumber);
-    System.out.println("Terms and Conditions: "+termsAndConditions);
-    System.out.println("Vendor Aadhar Card: "+vendorAadharCard.getOriginalFilename());
-    System.out.println("Vendor PAN: "+vendorPAN.getOriginalFilename());
-    System.out.println("Business PAN: "+businessPAN.getOriginalFilename());
-    System.out.println("Electricity Bill: "+electricityBill.getOriginalFilename());
-    System.out.println("License: "+license.getOriginalFilename());
-    for(MultipartFile businessPhoto: businessPhotos){
-        System.out.println("Business Photos: "+businessPhoto.getOriginalFilename());
-    }
     Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
     vendor.setPasswordHash(passwordEncoder.encode(password));
     vendor.setRole("VENDOR");
+    vendor.setNoOfServices(0);
+    vendor.setPlanType("BASIC");
     vendorRepository.save(vendor);
 
     //step 2 Save the images to the S3 bucket
@@ -71,10 +57,7 @@ public ResponseEntity<?> registerVendor(String username, String password, String
     Map<String, String> fileUrls = new HashMap<>();
 
     Map<String, String> metadata = new HashMap<>();
-//        metadata.put("Content-Type", vendorAadharCard.getContentType());
-//        metadata.put("Content-Length", String.valueOf(vendorAadharCard.getSize()));
 
-//    String key = vendorId + "/documents/" + "/"+fileType+"_" + fileName;
     fileUrls.put("vendor_aadharCard", fileStore.save(vendorAadharCard.getOriginalFilename(),"vendor_adhaarCard", vendorId ,Optional.of(metadata),vendorAadharCard.getInputStream(), generateKey(vendorAadharCard, vendorId, "adhaarCard")));
     fileUrls.put("vendor_PAN", fileStore.save(vendorPAN.getOriginalFilename(),"vendor_PAN", vendorId ,Optional.of(metadata),vendorPAN.getInputStream(), generateKey(vendorAadharCard, vendorId, "PAN Card")));
     fileUrls.put("business_PAN", fileStore.save(businessPAN.getOriginalFilename(),"business_PAN", vendorId ,Optional.of(metadata),businessPAN.getInputStream(),generateKey(vendorAadharCard, vendorId, "Business PAN")));
@@ -173,6 +156,10 @@ public ResponseEntity<?> registerVendor(String username, String password, String
     public List<Vendor> getVendorByLocationByCategory(String category, String location) {
         Query query = new Query(Criteria.where("business_category").is(category).and("city").is(location));
         return mongoTemplate.find(query, Vendor.class);
+    }
+
+    public Vendor getVendorById(String id) {
+        return vendorRepository.findById(new ObjectId(id)).orElse(null);
     }
 
 
